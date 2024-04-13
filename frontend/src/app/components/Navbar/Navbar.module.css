@@ -54,10 +54,28 @@
   color: #fff;
   cursor: pointer;
   padding: 5px 0;
+  display: flex;
+  flex-direction: column; 
+  align-items: center;
 }
 
 .navOption:hover {
-  border-bottom: 2px #fff solid;
+  /* border-bottom: 2px #fff solid; */
+}
+
+.navUnderline {
+  position: relative;
+  bottom: 0;
+  width: 0%;
+  height: 2px;
+  transition: all 0.5s;
+  background-color: #fff;
+  opacity: 0;
+}
+
+.navUnderlineActive {
+  width: 100% !important;
+  opacity: 1 !important;
 }
 
 .mobileNavContainer {
