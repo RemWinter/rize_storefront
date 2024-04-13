@@ -27,6 +27,7 @@
   /* width: 50%; 
   padding-left: 100px; */
   filter: drop-shadow(rgb(0, 0, 0) 1px 1px 1px);
+  cursor: pointer;
 }
 
 .navItemsContainer {

@@ -1,10 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import landingReducer from "./landingSlice";
+import globalReducer from "./globalSlice";
+import sidebarReducer from "./sidebarSlice";
 
 export const store = configureStore({
   reducer: {
+    globalSlice: globalReducer,
     landingSlice: landingReducer,
+    sidebarSlice: sidebarReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }),

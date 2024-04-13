@@ -4,7 +4,7 @@ import styles from './Navbar.module.css'
 import Image from 'next/image'
 import { IoMenuSharp } from "react-icons/io5";
 import { useAppDispatch } from '../redux/store'
-import { setDimensions } from '../redux/landingSlice'
+import { setDimensions } from '../redux/globalSlice'
 import Divider from '@mui/material/Divider';
 import { MdLogin } from "react-icons/md";
 import { IoShirtOutline, IoPhonePortraitOutline } from "react-icons/io5";
@@ -20,7 +20,7 @@ const Navbar = () => {
   const [atTop, setAtTop] = useState<boolean>(true);
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false)
   const mobileNavOpenRef = useRef<boolean>(false)
-  const [windowDimensions, setWindowDimension] = useState<Dimentions>({x:1920, y:1080})
+  const [windowDimensions, setWindowDimension] = useState<Dimentions | null>(null)
   const dispatch = useAppDispatch()
   const handleScroll = () => {
     const currentScrollPos = window.scrollY;
@@ -66,19 +66,23 @@ const Navbar = () => {
   const navOptions: Record<string, any>[] = [
     {
       text: 'Login',
-      icon: <MdLogin size={19}/>
+      icon: <MdLogin size={19}/>,
+      link: '#'
     },
     {
       text: 'Clothing',
-      icon: <IoShirtOutline size={19}/>
+      icon: <IoShirtOutline size={19}/>,
+      link: '/products?clothing'
     },
     {
       text: 'Accessories',
-      icon: <IoPhonePortraitOutline size={19}/>
+      icon: <IoPhonePortraitOutline size={19}/>,
+      link: '#'
     },
     {
       text: 'Contact',
-      icon: <TbMessage2Question size={19}/>
+      icon: <TbMessage2Question size={19}/>,
+      link: '#'
     },
   ]
   return (
@@ -94,6 +98,7 @@ const Navbar = () => {
             // filter: (windowDimensions?.x <= 1050) && atTop ? 'drop-shadow(#000000 1px 1px 1px)' : 'none',
             transition:'all 0.5s'
           }}
+          onClick={() => window.location.assign('/')}
         >
           <Image
               src='/rize_logo4.png'
@@ -102,7 +107,7 @@ const Navbar = () => {
               height={60}
             />
         </div>
-        {windowDimensions && windowDimensions.x > 1050 ? 
+        {windowDimensions && windowDimensions.x > 960 ? 
           <NavItems navOptions={navOptions}/> :
           <MobileNav open={mobileNavOpen} 
             toggleOpen={toggleMobileNav} 
@@ -123,9 +128,9 @@ const NavItems: React.FC<NavItemsProps> = ({navOptions}) => {
     <div className={styles.navItemsContainer}>
       { navOptions.map((option, index) => (
         <div key={index}>
-          <h1 className={styles.navOption}>
+          <a href={option.link} className={styles.navOption}>
             {option.text}
-          </h1>
+          </a>
         </div>
       ))
       }
@@ -137,7 +142,7 @@ interface MobileNavProps {
   open: boolean;
   toggleOpen: Function;
   navOptions: Record<string, any>[];
-  windowDimensions: Dimentions;
+  windowDimensions: Dimentions | null;
 }
 
 const MobileNav: React.FC<MobileNavProps> = ({open, toggleOpen, navOptions, windowDimensions}) => {
@@ -151,9 +156,10 @@ const MobileNav: React.FC<MobileNavProps> = ({open, toggleOpen, navOptions, wind
           size={30}
       />
       </div>
+      {windowDimensions &&
         <div 
           style={{
-            right: open ? '0' : windowDimensions.x < 1050 ? '-100%' : '-50%', 
+            right: open ? '0' : windowDimensions.x < 960 ? '-100%' : '-50%', 
             backgroundColor: open ? 'var(--color-retro-blue)' : 'rgba(0,0,0,0)', maxWidth: '300px'}}
           className={styles.mobileNavContainer}
         >
@@ -162,7 +168,7 @@ const MobileNav: React.FC<MobileNavProps> = ({open, toggleOpen, navOptions, wind
           <div className={styles.menuItemsContainer}>
             {navOptions.map((item, index) => (
               <div className={styles.mobileNavLinkContainer} key={index} onClick={() => toggleOpen()}>
-                <a className={styles.mobileNavLink} href="#">
+                <a className={styles.mobileNavLink} href={item.link}>
                   {item.icon}
                   <span className={styles.mobileNavLinkText}>{item.text}</span>
                 </a>
@@ -171,6 +177,7 @@ const MobileNav: React.FC<MobileNavProps> = ({open, toggleOpen, navOptions, wind
             ))}
           </div>
         </div>
+      }
       
     </>
   )

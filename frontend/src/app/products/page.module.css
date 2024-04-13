@@ -1,0 +1,9 @@
+.main {
+  height: 100%;
+  padding-top: 104px;
+}
+
+.pageBody {
+  position: relative;
+  height: 100%;
+}
