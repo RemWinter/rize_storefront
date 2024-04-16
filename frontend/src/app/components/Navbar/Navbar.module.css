@@ -37,6 +37,12 @@
   gap: 65px;
   align-items: center;
   justify-content: center;
+  opacity: 0;
+  transition: 0.5s opacity;
+}
+
+.visible {
+  opacity: 1;
 }
 
 .menuIconContainer {
@@ -46,6 +52,8 @@
   margin-right: 20px;
   cursor: pointer;
   z-index: 5;
+  opacity: 0;
+  transition: 0.5s opacity;
 }
 
 .navOption {
@@ -111,6 +119,15 @@
 
 .mobileNavLinkText {
   margin-left: 10px;
+}
+
+@keyframes fadeIn {
+  0%{
+    opacity: 0;
+  }
+  100%{
+    opacity: 1;
+  }
 }
 
 @media screen and (max-width: 1050px) {

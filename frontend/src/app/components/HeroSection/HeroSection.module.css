@@ -47,6 +47,13 @@
   gap: 10px;
 }
 
+.heroText {
+  position: relative;
+  top: 20px;
+  opacity: 0;
+  animation: riseIn 1.5s forwards;
+}
+
 .heroText, .subTagline {
   color: white;
   filter: drop-shadow(black 1px 1px 10px);
@@ -61,6 +68,10 @@
   font-size: 0.8rem;
   font-weight: 300;
   color: var(--color-silver-sand);
+  height: 15.5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .btnContainer {
@@ -84,6 +95,67 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: relative;
+  left: 0px;
+  opacity: 0;
+}
+
+.btnLeft {
+  left: 20px;
+  animation: fadeInFromRight 1s forwards 0.5s;
+}
+
+.btnRight {
+  left: -20px;
+  animation: fadeInFromLeft 1s forwards 0.5s;
+}
+
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background-color: var(--color-silver-sand);
+  /* margin-left: 2px; */
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% { 
+    opacity: 0;
+  }
+}
+
+@keyframes riseIn {
+  0% {
+    opacity: 0;
+    top: 20px
+  }
+  100% {
+    opacity: 1;
+    top: 0px
+  }
+}
+
+@keyframes fadeInFromLeft {
+  0% {
+    opacity: 0;
+    left: -20px
+  }
+  100% {
+    opacity: 1;
+    left: 0px
+  }
+}
+
+@keyframes fadeInFromRight {
+  0% {
+    opacity: 0;
+    left: 20px
+  }
+  100% {
+    opacity: 1;
+    left: 0px
+  }
 }
 
 @media screen and (min-width: 720px) {

@@ -22,6 +22,7 @@ const Navbar = () => {
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false)
   const mobileNavOpenRef = useRef<boolean>(false)
   const [windowDimensions, setWindowDimension] = useState<Dimentions | null>(null)
+  const [initialLoad, setInitialLoad] = useState<boolean>(true)
   const dispatch = useAppDispatch()
   const handleScroll = () => {
     const currentScrollPos = window.scrollY;
@@ -109,7 +110,7 @@ const Navbar = () => {
             />
         </div>
         {windowDimensions && windowDimensions.x > 960 ? 
-          <NavItems navOptions={navOptions}/> :
+          <NavItems navOptions={navOptions} initialLoad={initialLoad} setInitialLoad={setInitialLoad}/> :
           <MobileNav open={mobileNavOpen} 
             toggleOpen={toggleMobileNav} 
             navOptions={navOptions} 
@@ -121,13 +122,27 @@ const Navbar = () => {
 }
 
 interface NavItemsProps {
-  navOptions: Record<string, any>[]
+  navOptions: Record<string, any>[];
+  initialLoad: boolean;
+  setInitialLoad: (bool:boolean) => void
 }
 
-const NavItems: React.FC<NavItemsProps> = ({navOptions}) => {
+const NavItems: React.FC<NavItemsProps> = ({navOptions, initialLoad, setInitialLoad}) => {
+  const navItemsDiv = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (initialLoad) {
+      setTimeout(() => {
+        if (navItemsDiv.current) {
+          navItemsDiv.current.style.opacity = '1'
+        }
+      }, 500);
+      setInitialLoad(false)
+    }
+  }, [])
 
   return (
-    <div className={styles.navItemsContainer}>
+    <div ref={navItemsDiv} className={`${styles.navItemsContainer} ${!initialLoad && styles.visible}`}>
       { navOptions.map((option, index) => (
         <UnderlineDivAnimated key={index} gap={5}>
           <a href={option.link} className={styles.navOption}>
@@ -148,10 +163,17 @@ interface MobileNavProps {
 }
 
 const MobileNav: React.FC<MobileNavProps> = ({open, toggleOpen, navOptions, windowDimensions}) => {
+  const hamBurgermenu = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (hamBurgermenu.current) {
+      hamBurgermenu.current.style.opacity = '1'
+    }
+  }, [])
 
   return (
     <>
-      <div className={styles.menuIconContainer}>
+      <div ref={hamBurgermenu} className={styles.menuIconContainer}>
         <IoMenuSharp 
         onClick={() => toggleOpen()}
           color='#fff'
