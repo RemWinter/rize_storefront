@@ -9,6 +9,7 @@ import Divider from '@mui/material/Divider';
 import { MdLogin } from "react-icons/md";
 import { IoShirtOutline, IoPhonePortraitOutline } from "react-icons/io5";
 import { TbMessage2Question } from "react-icons/tb";
+import UnderlineDivAnimated from '../common/UnderlineDivAnimated/UnderlineDivAnimated';
 
 interface Dimentions {
   x:number;
@@ -124,34 +125,15 @@ interface NavItemsProps {
 }
 
 const NavItems: React.FC<NavItemsProps> = ({navOptions}) => {
-  const [navOptionDivs, setNavOptionDivs] = useState<NodeListOf<Element>>()
-
-  useEffect(() => {
-    setNavOptionDivs(document.querySelectorAll(`.${styles.navUnderline}`))
-  }, [])
-
-  const handleNavHover = (index:number, isHovered:boolean) => {
-    if (navOptionDivs) {
-      const div = navOptionDivs[index]
-      isHovered ? div.classList.add(styles.navUnderlineActive) : div.classList.remove(styles.navUnderlineActive)
-    }
-  }
 
   return (
     <div className={styles.navItemsContainer}>
       { navOptions.map((option, index) => (
-        <div
-          className='nav-option-container'
-          key={index}
-          style={{position:'relative'}}
-          onMouseOver={() => handleNavHover(index, true)}
-          onMouseOut={() => handleNavHover(index, false)}
-          >
+        <UnderlineDivAnimated key={index} gap={5}>
           <a href={option.link} className={styles.navOption}>
             {option.text}
-          <div className={styles.navUnderline}/>
           </a>
-        </div>
+        </UnderlineDivAnimated>
       ))
       }
     </div>

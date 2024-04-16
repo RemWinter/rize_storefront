@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from './HeroSection.module.css'
+import UnderlineDivAnimated from '../common/UnderlineDivAnimated/UnderlineDivAnimated'
 
 const HeroSection = () => {
   return (
@@ -18,8 +19,12 @@ const HeroSection = () => {
           <h1 className={styles.heroText}>Rize Apparel</h1>
         </div>
         <div className={styles.btnContainer}>
-          <button className={styles.btn}>Explore the Collection</button>
-          <button className={styles.btn} style={{backgroundColor: 'var(--color-primary)', color: 'white', borderColor: 'var(--color-primary)'}}>Join the Rize</button>
+          <UnderlineDivAnimated style={{width:'50%'}} gap={4} reduceWidthBy={30} color='var(--color-warm-beige)'>
+            <button className={styles.btn}>Explore the Collection</button>
+          </UnderlineDivAnimated>
+          <UnderlineDivAnimated style={{width:'50%'}} gap={4} reduceWidthBy={30}>
+            <button className={styles.btn} style={{backgroundColor: 'var(--color-primary)', color: 'white', borderColor: 'var(--color-primary)'}}>Join the Rize</button>
+          </UnderlineDivAnimated>
         </div>
       </div>
 
