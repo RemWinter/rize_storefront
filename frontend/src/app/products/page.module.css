@@ -1,9 +1,12 @@
 .main {
   height: 100%;
-  padding-top: 104px;
+  padding-top: 80px;
+  overflow: visible;
 }
 
 .pageBody {
   position: relative;
   height: 100%;
+  overflow: visible;
+
 }

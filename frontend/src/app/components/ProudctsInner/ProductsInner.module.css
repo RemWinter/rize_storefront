@@ -1,0 +1,35 @@
+.container {
+  width: 100%;
+  /* height: auto;
+  overflow: auto; */
+  display: grid;
+  grid-template-columns: 50% 50%;
+  gap: 6px;
+}
+
+.img {
+  height: auto !important;
+}
+
+.h2 {
+  font-size: 14px;
+  color: var(--text-primary);
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.tagline {
+  color: var(--color-warm-beige);
+}
+
+.description, .colors {
+  font-weight: 400;
+  color: var(--text-tertiary);
+}
+
+@media screen and (min-width: 960px) {
+  .container {
+    grid-template-columns: repeat(3, 1fr);
+    margin-left: 180px;
+  }
+}

@@ -8,11 +8,15 @@ interface Dimentions {
 }
 
 type GlobalState = {
-  dimensions: Dimentions | null
+  dimensions: Dimentions | null;
+  scrollOffsetY: number;
+  navVisible: boolean
 };
 
 const initialState: GlobalState = {
-  dimensions: null
+  dimensions: null,
+  scrollOffsetY: 0,
+  navVisible: true
 }
 
 export const globalSlice = createSlice({
@@ -21,6 +25,12 @@ export const globalSlice = createSlice({
   reducers: {
     setDimensions: (state, action: PayloadAction<Dimentions>) => {
       state.dimensions = action.payload;
+    },
+    setScrollOffsetY: (state, action: PayloadAction<number>) => {
+      state.scrollOffsetY = action.payload;
+    },
+    setNavVisible: (state, action: PayloadAction<boolean>) => {
+      state.navVisible = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -34,7 +44,7 @@ export const globalSlice = createSlice({
   },
 });
 
-export const { setDimensions } =
+export const { setDimensions, setScrollOffsetY, setNavVisible } =
   globalSlice.actions;
 
 const globalReducer = globalSlice.reducer;

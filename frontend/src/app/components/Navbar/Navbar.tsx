@@ -4,7 +4,7 @@ import styles from './Navbar.module.css'
 import Image from 'next/image'
 import { IoMenuSharp } from "react-icons/io5";
 import { useAppDispatch } from '../redux/store'
-import { setDimensions } from '../redux/globalSlice'
+import { setDimensions, setNavVisible, setScrollOffsetY } from '../redux/globalSlice'
 import Divider from '@mui/material/Divider';
 import { MdLogin } from "react-icons/md";
 import { IoShirtOutline, IoPhonePortraitOutline } from "react-icons/io5";
@@ -23,13 +23,19 @@ const Navbar = () => {
   const mobileNavOpenRef = useRef<boolean>(false)
   const [windowDimensions, setWindowDimension] = useState<Dimentions | null>(null)
   const [initialLoad, setInitialLoad] = useState<boolean>(true)
+  const nav = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch()
   const handleScroll = () => {
     const currentScrollPos = window.scrollY;
+    dispatch(setScrollOffsetY(currentScrollPos))
     setAtTop(window.scrollY > 50 ? false : true)
     mobileNavOpenRef.current ? setVisible(true) : setVisible(prevScrollPos > currentScrollPos || currentScrollPos < 10);
     setPrevScrollPos(currentScrollPos);
   };
+
+  useEffect(() => {
+    dispatch(setNavVisible(atTop))
+  }, [atTop])
   
   const handleResize = () => {
     const dimension = {x: window.innerWidth, y: window.innerHeight}
@@ -47,8 +53,21 @@ const Navbar = () => {
     setWindowDimension(dimensions)
     window.addEventListener('resize', handleResize)
 
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach(mutation => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+          mutation.target.style.top === '0px' ? dispatch(setNavVisible(true)) : dispatch(setNavVisible(false))
+        }
+      });
+    });
+
+    if (nav.current) {
+      observer.observe(nav.current, { attributes: true });
+    }
+
     return () => {
       window.removeEventListener('resize', handleResize);
+      observer.disconnect();
     };
   }, [])
 
@@ -74,7 +93,7 @@ const Navbar = () => {
     {
       text: 'Clothing',
       icon: <IoShirtOutline size={19}/>,
-      link: '/products?clothing'
+      link: '/products'
     },
     {
       text: 'Accessories',
@@ -89,10 +108,14 @@ const Navbar = () => {
   ]
   return (
     <nav 
+      ref={nav}
       className={styles.navbarContainer} 
       style={{ 
         top: visible ? '0' : '-200px', 
-        backgroundColor: atTop ? 'rgba(0,0,0,0)' : '#506473',
+        backgroundColor: atTop ? 'rgba(0,0,0,0)' : 'rgba(80, 100, 115, 0.9)',
+        padding: atTop ? '20px 0' : '8px 0',
+        height: atTop ? '104px' : '80px',
+        backdropFilter: atTop ? 'blur(0px)' : 'blur(5px)'
       }}>
         <div 
           className={styles.logoContainer} 
@@ -105,16 +128,19 @@ const Navbar = () => {
           <Image
               src='/rize_logo4.png'
               alt='Logo'
-              width={60}
-              height={60}
+              fill
+              objectFit='contain'
+              // width={60}
+              // height={60}
             />
         </div>
-        {windowDimensions && windowDimensions.x > 960 ? 
+        {windowDimensions && windowDimensions.x >= 960 ? 
           <NavItems navOptions={navOptions} initialLoad={initialLoad} setInitialLoad={setInitialLoad}/> :
           <MobileNav open={mobileNavOpen} 
             toggleOpen={toggleMobileNav} 
             navOptions={navOptions} 
             windowDimensions={windowDimensions}
+            atTop={atTop}
           />
         }
     </nav>
@@ -134,7 +160,8 @@ const NavItems: React.FC<NavItemsProps> = ({navOptions, initialLoad, setInitialL
     if (initialLoad) {
       setTimeout(() => {
         if (navItemsDiv.current) {
-          navItemsDiv.current.style.opacity = '1'
+          // navItemsDiv.current.style.opacity = '1'
+          navItemsDiv.current.classList.add(styles.visible)
         }
       }, 500);
       setInitialLoad(false)
@@ -142,7 +169,7 @@ const NavItems: React.FC<NavItemsProps> = ({navOptions, initialLoad, setInitialL
   }, [])
 
   return (
-    <div ref={navItemsDiv} className={`${styles.navItemsContainer} ${!initialLoad && styles.visible}`}>
+    <div ref={navItemsDiv} className={`${styles.navItemsContainer}`}>
       { navOptions.map((option, index) => (
         <UnderlineDivAnimated key={index} gap={5}>
           <a href={option.link} className={styles.navOption}>
@@ -160,9 +187,10 @@ interface MobileNavProps {
   toggleOpen: Function;
   navOptions: Record<string, any>[];
   windowDimensions: Dimentions | null;
+  atTop: boolean;
 }
 
-const MobileNav: React.FC<MobileNavProps> = ({open, toggleOpen, navOptions, windowDimensions}) => {
+const MobileNav: React.FC<MobileNavProps> = ({open, toggleOpen, navOptions, windowDimensions, atTop}) => {
   const hamBurgermenu = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -187,7 +215,7 @@ const MobileNav: React.FC<MobileNavProps> = ({open, toggleOpen, navOptions, wind
             backgroundColor: open ? 'var(--color-retro-blue)' : 'rgba(0,0,0,0)', maxWidth: '300px'}}
           className={styles.mobileNavContainer}
         >
-          <div style={{width:'100%', height: '104px'}}/>
+          <div style={{width:'100%', height: atTop ? '104px' : '80px', transition: 'all 0.5s'}}/>
           <Divider/>
           <div className={styles.menuItemsContainer}>
             {navOptions.map((item, index) => (
