@@ -95,7 +95,6 @@ const ProudctsInner = () => {
               height: '100%',
               // paddingLeft: index%2 === 0 ? '0' : '3px',
               // paddingRight: index%2 === 0 ? '3px' : '0',
-              marginBottom: '18px',
               display: 'flex',
               flexDirection: 'column',
             }}>
@@ -113,7 +112,9 @@ const ProudctsInner = () => {
                 <h2 className={`${styles.h2} ${styles.title}`}>{item.title}</h2>
                 <h2 className={`${styles.h2} ${styles.description}`}>{item.description}</h2>
                 <h2 className={`${styles.h2} ${styles.colors}`}>{item.colors} Colour{item.colors > 1 ? 's' : ''}</h2>
-                <h2 className={`${styles.h2} ${styles.price}`}>{item.price}</h2>
+                {item.discountPrice ? <h2 className={`${styles.h2} ${styles.price}`}>£{item.discountPrice} <span className={styles.oldPrice}>£{item.price}</span></h2>
+                : 
+                <h2 className={`${styles.h2} ${styles.price}`}>£{item.price}</h2>}
               </div>
             </div>
           ))}
