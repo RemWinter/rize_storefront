@@ -76,7 +76,7 @@ const ProductsOuter = () => {
   return (
     <div className={styles.container}>
       <div 
-        style={{height: navVisible ? '233px' : windowDimensions.x < 960 ? '123px' : '84px'}}
+        style={{height: navVisible ? '233px' : windowDimensions.x < 960 ? '105px' : '84px'}}
         className={styles.coverDiv}/>
       <InfiniteScroll
          dataLength={10}
@@ -100,7 +100,7 @@ const ProductsOuter = () => {
           <>
             <div
               style={{
-                top: navVisible ? '200px' : '90px',
+                top: navVisible ? '200px' : '73px',
               }}
               className={styles.sideScrollContainer}>
               {categories.map((item, i) => (
