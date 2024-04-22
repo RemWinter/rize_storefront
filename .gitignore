@@ -36,3 +36,10 @@ frontend/yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 frontend/next-env.d.ts
+
+# Bytecode files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.cpython-*.pyc

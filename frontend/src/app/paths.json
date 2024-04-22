@@ -1,0 +1,6 @@
+{
+  "BACKEND_URL": "http://localhost:8000/",
+  "//local_url": "http://localhost:8000/",
+  "//backend_url": "http://18.168.30.33:8000/",
+  "URL": "http://localhost:3000/"
+}
