@@ -4,7 +4,7 @@ const apiURL = paths.BACKEND_URL + 'api'
 
 export const URLs = {
   user: {
-    register: `${apiURL}/register/`,
+    register: `${apiURL}/register`,
     login: `${apiURL}/login`,
     logout: `${apiURL}/logout`,
   }

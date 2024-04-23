@@ -1,9 +1,9 @@
 'use client'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { ReactElement, useEffect, useRef, useState } from 'react'
 import styles from './Navbar.module.css'
 import Image from 'next/image'
 import { IoMenuSharp } from "react-icons/io5";
-import { useAppDispatch } from '../redux/store'
+import { useAppDispatch, useAppSelector } from '../redux/store'
 import { setDimensions, setNavVisible, setScrollOffsetY } from '../redux/globalSlice'
 import Divider from '@mui/material/Divider';
 import { MdLogin } from "react-icons/md";
@@ -15,6 +15,13 @@ interface Dimentions {
   x:number;
   y:number;
 }
+
+interface NavOption {
+  text:string;
+  icon:ReactElement;
+  link:string;
+}
+
 const Navbar = () => {
   const [prevScrollPos, setPrevScrollPos] = useState<number>(0);
   const [visible, setVisible] = useState<boolean>(true);
@@ -25,6 +32,8 @@ const Navbar = () => {
   const [initialLoad, setInitialLoad] = useState<boolean>(true)
   const nav = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch()
+  const {email, firstName, lastName, isStaff} = useAppSelector(state => state.userSlice)
+
   const handleScroll = () => {
     const currentScrollPos = window.scrollY;
     dispatch(setScrollOffsetY(currentScrollPos))
@@ -32,6 +41,32 @@ const Navbar = () => {
     mobileNavOpenRef.current ? setVisible(true) : setVisible(prevScrollPos > currentScrollPos || currentScrollPos < 10);
     setPrevScrollPos(currentScrollPos);
   };
+
+  useEffect(() => {
+    // console.log(email)
+    // setNavOptions([
+    //   {
+    //     text: 'Logout',
+    //     icon: <MdLogin size={19}/>,
+    //     link: '/login'
+    //   },
+    //   {
+    //     text: 'Clothing',
+    //     icon: <IoShirtOutline size={19}/>,
+    //     link: '/products'
+    //   },
+    //   {
+    //     text: 'Accessories',
+    //     icon: <IoPhonePortraitOutline size={19}/>,
+    //     link: '#'
+    //   },
+    //   {
+    //     text: 'Contact',
+    //     icon: <TbMessage2Question size={19}/>,
+    //     link: '#'
+    //   },
+    // ])
+  }, [email])
 
   useEffect(() => {
     dispatch(setNavVisible(atTop))
@@ -84,11 +119,11 @@ const Navbar = () => {
     mobileNavOpenRef.current = mobileNavOpen
   }, [mobileNavOpen])
 
-  const navOptions: Record<string, any>[] = [
+  const [navOptions, setNavOptions] = useState<NavOption[]>([
     {
       text: 'Login',
       icon: <MdLogin size={19}/>,
-      link: '#'
+      link: '/login'
     },
     {
       text: 'Clothing',
@@ -105,7 +140,7 @@ const Navbar = () => {
       icon: <TbMessage2Question size={19}/>,
       link: '#'
     },
-  ]
+  ])
   return (
     <nav 
       ref={nav}

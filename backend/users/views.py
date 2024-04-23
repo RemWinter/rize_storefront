@@ -9,6 +9,13 @@ import stripe
 from django.core.handlers.wsgi import WSGIRequest
 from django.contrib.auth.hashers import make_password
 
+def get_current_user_data(context, user:RizeUser):
+   context['email'] = user.email
+   context['first_name'] = user.first_name
+   context['last_name'] = user.last_name
+   context['is_staf'] = user.is_staff
+   return context
+
 @csrf_exempt
 def register_new_user(request):
   context = {}
@@ -16,8 +23,8 @@ def register_new_user(request):
     return JsonResponse({'error': 'Invalid request method. POST method expected.'}, status=400)
 
   email = request.POST.get('email').lower()
-  first_name = request.POST.get('first_name').lower()
-  last_name = request.POST.get('last_name').lower()
+  first_name = request.POST.get('firstName').lower()
+  last_name = request.POST.get('lastName').lower()
   password = request.POST.get('password')
 
   if RizeUser.objects.filter(email=email).exists():
@@ -53,6 +60,7 @@ def register_new_user(request):
   user = authenticate(username=email, password=password)
   auth_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
   context['success'] = True
+  context = get_current_user_data(context, user)
   return JsonResponse(context)
 
 

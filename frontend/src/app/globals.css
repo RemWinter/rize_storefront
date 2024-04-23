@@ -6,12 +6,15 @@
   --color-midnight-green: #2f4f46;
   --color-silver-sand: #c4c4c4;
   --color-main-bg: #43464B;
+  --color-error: #c00000;
+  --color-success: #21ae01;
   --text-primary: #fff;
   --text-secondary: #d2d2d2;
   --text-tertiary: #828282;
   --text-quaternary: rgb(103 128 147);
   --max-width: 1100px;
   --border-radius: 12px;
+  --nav-full-height: 104px;
   --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
     "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
     "Fira Mono", "Droid Sans Mono", "Courier New", monospace;

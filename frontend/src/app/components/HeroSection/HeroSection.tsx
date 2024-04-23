@@ -104,7 +104,7 @@ const HeroSection = () => {
             <button className={`${styles.btn} ${styles.btnLeft}`} onClick={() => window.location.assign('/products')}>Explore the Collection</button>
           </UnderlineDivAnimated>
           <UnderlineDivAnimated style={{width:'50%'}} gap={4} reduceWidthBy={30}>
-            <button className={`${styles.btn} ${styles.btnRight}`} style={{backgroundColor: 'var(--color-primary)', color: 'white', borderColor: 'var(--color-primary)'}}>Join the Rize</button>
+            <button className={`${styles.btn} ${styles.btnRight}`} style={{backgroundColor: 'var(--color-primary)', color: 'white', borderColor: 'var(--color-primary)'}} onClick={() => window.location.assign('/register')}>Join the Rize</button>
           </UnderlineDivAnimated>
         </div>
       </div>
