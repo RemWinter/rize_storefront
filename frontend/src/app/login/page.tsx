@@ -4,6 +4,7 @@ import styles from "./page.module.css";
 import Navbar from "../components/Navbar/Navbar";
 import { store } from "../components/redux/store";
 import Head from 'next/head'
+import Login from "../components/Login/Login";
 
 export default function Home() {
 
@@ -15,7 +16,8 @@ export default function Home() {
         <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet"/>
       </Head>
       <Provider store={store}>
-      <Navbar/>
+        <Navbar/>
+        <Login/>
       </Provider>
     </main>
   );

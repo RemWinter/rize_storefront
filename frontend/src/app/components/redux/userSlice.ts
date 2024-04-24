@@ -1,5 +1,5 @@
 import { getProjectsAPI, getTabsAPI } from "@/app";
-import { register } from "@/app/api/user";
+import { login, register } from "@/app/api/user";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
@@ -33,6 +33,25 @@ export const registerProcess = createAsyncThunk(
   ) => {
     try {
       const res = await register(params)
+      return res
+    } 
+    catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+)
+
+export const loginProcess = createAsyncThunk(
+  "user/login",
+  async (
+    params: {
+      email: string;
+      password: string,
+    },
+    thunkAPI
+  ) => {
+    try {
+      const res = await login(params)
       return res
     } 
     catch (error) {

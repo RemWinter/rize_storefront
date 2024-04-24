@@ -66,24 +66,20 @@ def register_new_user(request):
 
 @csrf_exempt
 def login(request: WSGIRequest):
-    response = HttpResponse()
     context = {}
-    data = json.loads(request.body)
-    if 'email' in data:
-        try:
-            user = RizeUser.objects.get(email__iexact=data['email'])
-        except:
-            return JsonResponse({"error" : "invalid email"})  
-    else:
-        return JsonResponse({"error" : "no email provided"})  
-    email = data['email']
-    password = data['password']
+    email = request.POST.get('email').lower()
+    password = request.POST.get('password')
+    try:
+        user = RizeUser.objects.get(email__iexact=email)
+    except:
+        return JsonResponse({"error" : "invalid email"})  
     user = authenticate(username=email, password=password)
     if user is not None:
       auth_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-      return response
+      context['success'] = True
+      return JsonResponse(context)
     else: 
-      context['error'] = 'invalid email/password'
+      context['error'] = 'incorrect password'
       return JsonResponse(context)
 
 def logout(request: WSGIRequest):
