@@ -1,0 +1,40 @@
+{
+    "dev": {
+        "slim_handler": true,
+        "aws_region": "eu-west-2",
+        "django_settings": "backend.settings",
+        "exclude": [
+            "boto3",
+            "dateutil",
+            "botocore",
+            "s3transfer",
+            "concurrent",
+            "frontend",
+            "*.gz",
+            "*.rar",
+            "boto3*",
+            "botocore*"
+        ],
+        "profile_name": "personal",
+        "project_name": "backend",
+        "runtime": "python3.9",
+        "s3_bucket": "rize-zappa",
+        "regex_excludes": [
+            "scipy", "matplotlib", "frontend", "PIL"
+        ],
+        "callbacks": {
+            "zip": "zappa_package_cleaner.main"
+        },
+        "environment_variables": {
+            "AWS_S3_ENDPOINT_URL":"https://s3.eu-west-2.amazonaws.com",
+            "AWS_STORAGE_BUCKET_NAME":"rize-content-dev",
+            "DATABASE_NAME":"rize",
+            "DATABASE_USER":"postgres",
+            "DATABASE_HOST":"rize-dev.ch8c28se87zp.eu-west-2.rds.amazonaws.com",
+            "DATABASE_PORT":"5432",
+            "RIZE_DJANGO_SK":"-%*-j-y78y3z3yi-$)v&7g@9s2^7i$41g=@shdf#7ojm4#(gr$"
+        },
+        "manage_roles": false,
+        "role_name": "rize-django-dev-ZappaLambdaExecutionRole"
+    }
+}

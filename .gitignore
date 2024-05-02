@@ -28,6 +28,7 @@ frontend/yarn-error.log*
 
 # local env files
 .env*.local
+*.env
 
 # vercel
 .vercel
@@ -43,3 +44,5 @@ __pycache__/
 *.pyo
 *.pyd
 *.cpython-*.pyc
+
+*.pickle

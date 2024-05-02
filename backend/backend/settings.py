@@ -27,7 +27,7 @@ SECRET_KEY = os.environ.get('RIZE_DJANGO_SK')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-DEVELOP_ON = (os.environ['DEVELOP_ON'] == 'True')
+# DEVELOP_ON = (os.environ['DEVELOP_ON'] == 'True')
 
 ALLOWED_HOSTS = ['*']
 
@@ -97,7 +97,7 @@ CSRF_COOKIE_SAMESITE = False
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'backend', 'templates')],
+        'DIRS': [os.path.join(str(BASE_DIR), 'backend', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -259,9 +259,9 @@ ICON_IMAGE_PATH = 'user_icon_images'
 
 STATIC_URL = 'static/'
 
-STRIPE_ENDPOINT_SECRET = os.environ['STRIPE_ENDPOINT_SECRET']
-STRIPE_PUBLISHABLE_KEY = os.environ['STRIPE_PUBLISHABLE_KEY']
-STRIPE_SECRET_KEY = os.environ['STRIPE_SECRET_KEY']
+# STRIPE_ENDPOINT_SECRET = os.environ['STRIPE_ENDPOINT_SECRET']
+# STRIPE_PUBLISHABLE_KEY = os.environ['STRIPE_PUBLISHABLE_KEY']
+# STRIPE_SECRET_KEY = os.environ['STRIPE_SECRET_KEY']
 
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
