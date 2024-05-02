@@ -176,27 +176,18 @@ def process_message_with_AI(request: WSGIRequest):
       pickle.dump(creds, token)
 
   service = build('sheets', 'v4', credentials=creds)  # Ensure this is correct
-  # try:
   sheet_id = '199D94TLl11sWb4VaElquX2Hj7UzpA3dtcLPrm_PrkaA'
   range_name = 'Sheet1!A1:B2'
   sheet = service.spreadsheets().values().get(spreadsheetId=sheet_id, range=range_name).execute()
   values = sheet.get('values', [])
   system_prompt = None
   if not values:
-    print('No data found.')
+     pass
   else:
     for i, row in enumerate(values):
-      # print(row)
       if i == 1:
         system_prompt = row[0]
-        # user_msg = row[1]
-        print(f'System Prompt: {system_prompt}')
-        print(f'User message: {user_msg}')
     client = OpenAI()
-
-    print(thread_id)
-    print(thread_id)
-    print(thread_id)
 
     if thread_id:
       thread_message = client.beta.threads.messages.create(
@@ -204,7 +195,6 @@ def process_message_with_AI(request: WSGIRequest):
         role="user",
         content=user_msg,
       )
-
     else:
       if system_prompt:
         thread = client.beta.threads.create(
@@ -231,18 +221,10 @@ def process_message_with_AI(request: WSGIRequest):
       stream.until_done()
     
     reply = event_handler.get_full_response()
-    print("Full AI Response:", reply)
 
-  # print(thread.choices[0].message)
-  import pprint
-  pprint.pprint(reply)
   context['reply'] = reply
   context['threadId'] = thread_id
   return JsonResponse(context)
-# except Exception as e:
-#     print(f"An error occurred: {e}")
-#     context['error'] = True
-#     return JsonResponse(context)
 
 
 @csrf_exempt
