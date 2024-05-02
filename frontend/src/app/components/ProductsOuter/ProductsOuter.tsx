@@ -76,7 +76,7 @@ const ProductsOuter = () => {
   return (
     <div className={styles.container}>
       <div 
-        style={{height: navVisible ? '233px' : windowDimensions.x < 960 ? '105px' : '84px'}}
+        style={{height: navVisible ? windowDimensions.x < 960 ? '233px' : '200px' : windowDimensions.x < 960 ? '105px' : '84px'}}
         className={styles.coverDiv}/>
       <InfiniteScroll
          dataLength={10}
