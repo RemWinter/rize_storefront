@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import { useAppDispatch } from '../redux/store';
 import { registerProcess } from '../redux/userSlice';
 import { FaRegEyeSlash, FaRegEye } from "react-icons/fa";
+import TriangleLoader from '../common/TriangleLoader/TriangleLoader';
 
 interface IFormInput {
   email: string;
@@ -49,6 +50,7 @@ const Register = () => {
   const [passwordConfirmHasBlurred, setPasswordConfirmHasBlurred] = useState<boolean | null>(null)
   const [resError, setResError] = useState<string>('')
   const [existingEmails, setExistingEmails] = useState<string[]>([])
+  const [loading, setLoading]= useState<boolean>(false)
   const { register, handleSubmit, watch, setError, clearErrors, formState: { errors } } = useForm<IFormInput>({
     resolver: yupResolver(schema)
   });
@@ -59,13 +61,13 @@ const Register = () => {
       const inputIsValid = handleInputValidation(value, key)
       if (!inputIsValid) formIsValid = false
     })
-    formIsValid && 
+    if (formIsValid) {
+      setLoading(true)
       dispatch(registerProcess(data)).unwrap()
       .then(res => {
-        console.log(res)
+        res.success && window.location.assign('/products')
       })
       .catch(err => {
-        console.log(err.message)
         if (err.message === 'email already exists') {
           const email = data.email
           setError('email', {
@@ -76,7 +78,8 @@ const Register = () => {
             setExistingEmails([...existingEmails, email])
           }
         }
-      })
+      }).finally(() => setLoading(false))
+    } 
   }
   
   const toggleShowPassword = () => {
@@ -269,6 +272,12 @@ const checkName = (name:string) => {
       <div className={styles.bottomTextContainer}>
         <p>Already have an account? <span onClick={() => window.location.assign('/login')}>Login</span></p>
       </div>
+        <TriangleLoader 
+          open={loading} 
+          onClose={() => setLoading(false)}
+          loaderColor={'var(--color-copper-rust)'}
+          loaderText={'Registering your account...'}
+        />
     </div>
   )
 }

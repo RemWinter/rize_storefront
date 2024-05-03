@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import { useAppDispatch } from '../redux/store';
 import { loginProcess, registerProcess } from '../redux/userSlice';
 import { FaRegEyeSlash, FaRegEye } from "react-icons/fa";
+import TriangleLoader from '../common/TriangleLoader/TriangleLoader';
 
 interface IFormInput {
   email: string;
@@ -24,6 +25,7 @@ const Login = () => {
   const [emailHasBlurred, setEmailHasBlurred] = useState<boolean | null>(null)
   const [passwordHasBlurred, setPasswordHasBlurred] = useState<boolean | null>(null)
   const [resError, setResError] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
   const { register, handleSubmit, watch, setError, clearErrors, formState: { errors } } = useForm<IFormInput>({
     resolver: yupResolver(schema)
   });
@@ -34,7 +36,8 @@ const Login = () => {
       const inputIsValid = handleInputValidation(value, key)
       if (!inputIsValid) formIsValid = false
     })
-    formIsValid && 
+    if (formIsValid){
+      setLoading(true)
       dispatch(loginProcess(data)).unwrap()
       .then(res => {
         res.success && window.location.assign('/products')
@@ -52,6 +55,8 @@ const Login = () => {
           })
         }
       })
+      .finally(() => setLoading(false))
+    }
   }
   
   const toggleShowPassword = () => {
@@ -148,6 +153,12 @@ const checkPassword = (password:string) => {
       <div className={styles.bottomTextContainer}>
         <p>Not yet apart of the Rize? <span onClick={() => window.location.assign('/register')}>Register</span></p>
       </div>
+      <TriangleLoader 
+          open={loading} 
+          onClose={() => setLoading(false)}
+          loaderColor={'var(--color-copper-rust)'}
+          loaderText={'Logging you in...'}
+        />
     </div>
   )
 }

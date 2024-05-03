@@ -22,7 +22,7 @@
 }
 
 .logoContainer {
-  margin-left: 20px;
+  margin-left: 40px;
   /* width: 50%; 
   padding-left: 100px; */
   filter: drop-shadow(rgb(0, 0, 0) 1px 1px 1px);
@@ -40,7 +40,7 @@
   justify-content: flex-end;
   opacity: 0;
   transition: 0.5s opacity;
-  padding-right: 20px;
+  padding-right: 40px;
 }
 
 .visible {
