@@ -1,12 +1,15 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react'
 import styles from './ProductsOuter.module.css'
-import { Button, Divider } from '@mui/material'
+import { Alert, Button, Divider, Snackbar } from '@mui/material'
 import { useAppDispatch, useAppSelector } from '../redux/store'
 import { setSelectedTab } from '../redux/sidebarSlice'
 import ProudctsInner from '../ProudctsInner/ProudctsInner'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { headers } from 'next/headers'
+import { IoBagOutline } from "react-icons/io5";
+import { IoMdHeartEmpty } from "react-icons/io";
+import { setSnackbarIsOpen } from '../redux/snackbarSlice'
 
 
 interface Dimentions {
@@ -16,7 +19,9 @@ interface Dimentions {
 const ProductsOuter = () => {
   const dispatch = useAppDispatch()
   const {dimensions, scrollOffsetY, navVisible} = useAppSelector(state => state.globalSlice)
+  const { snackbarIsOpen, snackbarSeverity, snackbarText  } = useAppSelector(state => state.snackbarSlice)
   const {selectedTab} = useAppSelector(state => state.sidebarSlice)
+
   const [windowDimensions, setWindowDimension] = useState<Dimentions>({x:window.innerWidth, y:window.innerHeight})
   const header = useRef<HTMLDivElement>(null)
   const subHeader = useRef<HTMLDivElement>(null)
@@ -76,7 +81,7 @@ const ProductsOuter = () => {
   return (
     <div className={styles.container}>
       <div 
-        style={{height: navVisible ? windowDimensions.x < 960 ? '233px' : '200px' : windowDimensions.x < 960 ? '105px' : '84px'}}
+        style={{height: navVisible ? windowDimensions.x < 960 ? '200px' : '170px' : windowDimensions.x < 960 ? '105px' : '84px'}}
         className={styles.coverDiv}/>
       <InfiniteScroll
          dataLength={10}
@@ -88,10 +93,18 @@ const ProductsOuter = () => {
           ref={stickyRef}
           className={styles.headerContainer}
           style={{
-            top: navVisible ? '120px' : '20px',
+            top: navVisible ? '90px' : '20px',
           }}>
           <h1 ref={header} className={styles.header} style={{fontSize: headerIsSticky ? '24px' : '40px'}}>Clothing</h1>
           <h1 ref={subHeader} className={styles.subHeader}>{selectedTab}</h1>
+          <div className={styles.iconsDiv} style={{gap: !headerIsSticky && windowDimensions.x < 450 ? '0px' : '15px'}}>
+            <div className={styles.iconContainer}>
+              <IoMdHeartEmpty />
+            </div>
+            <div className={styles.iconContainer}>
+              <IoBagOutline />
+            </div>
+          </div>
         </div>
         <div 
           className={styles.mainContainer}
@@ -100,7 +113,7 @@ const ProductsOuter = () => {
           <>
             <div
               style={{
-                top: navVisible ? '200px' : '73px',
+                top: navVisible ? '170px' : '75px',
               }}
               className={styles.sideScrollContainer}>
               {categories.map((item, i) => (
@@ -129,6 +142,21 @@ const ProductsOuter = () => {
           }
         </div>
       </InfiniteScroll>
+      <Snackbar 
+        open={snackbarIsOpen}
+        autoHideDuration={2000}
+        anchorOrigin={{horizontal: 'center', vertical: 'bottom'}} 
+        onClose={() => dispatch(setSnackbarIsOpen(false))}
+      >
+        <Alert
+          onClose={() => dispatch(setSnackbarIsOpen(false))}
+          severity={snackbarSeverity}
+          variant="filled"
+          sx={{ width: '100%', backgroundColor: 'var(--color-copper-rust)'}}
+        >
+          {snackbarText}
+        </Alert>
+      </Snackbar>
     </div>
   )
 }

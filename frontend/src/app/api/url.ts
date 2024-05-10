@@ -7,5 +7,6 @@ export const URLs = {
     register: `${apiURL}/register`,
     login: `${apiURL}/login`,
     logout: `${apiURL}/logout`,
+    getInitialInfo: `${apiURL}/get_initial_user_info`
   }
 }

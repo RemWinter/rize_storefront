@@ -4,6 +4,7 @@ import landingReducer from "./landingSlice";
 import globalReducer from "./globalSlice";
 import sidebarReducer from "./sidebarSlice";
 import userReducer from "./userSlice";
+import snackbarReducer from "./snackbarSlice";
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     landingSlice: landingReducer,
     sidebarSlice: sidebarReducer,
     userSlice: userReducer,
+    snackbarSlice: snackbarReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }),

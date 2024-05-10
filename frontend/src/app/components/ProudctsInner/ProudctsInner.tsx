@@ -88,16 +88,19 @@ const ProudctsInner = () => {
         hasMore={false}
         loader={<></>}> */}
           {data.map((item, index) => (
-            <div style={{
-              flexBasis:'50%', 
-              minHeight: '339px', 
-              maxHeight: '568px',
-              height: '100%',
-              // paddingLeft: index%2 === 0 ? '0' : '3px',
-              // paddingRight: index%2 === 0 ? '3px' : '0',
-              display: 'flex',
-              flexDirection: 'column',
-            }}>
+            <div 
+              style={{
+                flexBasis:'50%', 
+                minHeight: '339px', 
+                maxHeight: '568px',
+                height: '100%',
+                // paddingLeft: index%2 === 0 ? '0' : '3px',
+                // paddingRight: index%2 === 0 ? '3px' : '0',
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+              key={index}
+            >
               <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', width:'100%', aspectRatio: '1/1'}}>
                 <Image
                   className={styles.img}

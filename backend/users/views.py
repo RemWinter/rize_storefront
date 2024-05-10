@@ -8,9 +8,10 @@ from openai import AssistantEventHandler, OpenAI
 from typing_extensions import override
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
-from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout, get_user
 
 from django.conf import settings
+
 from .models import RizeUser
 # import stripe
 from django.core.handlers.wsgi import WSGIRequest
@@ -18,11 +19,16 @@ from django.contrib.auth.hashers import make_password
 from django.views.decorators.http import require_http_methods
 
 def get_current_user_data(context, user:RizeUser):
-   context['email'] = user.email
-   context['first_name'] = user.first_name
-   context['last_name'] = user.last_name
-   context['is_staf'] = user.is_staff
-   return context
+  if user.id != None:
+    context['email'] = user.email
+    context['firstName'] = user.first_name
+    context['lastName'] = user.last_name
+  else:
+    context['email'] = ''
+    context['firstName'] = ''
+    context['lastName'] = ''
+  context['isStaff'] = user.is_staff
+  return context
 
 @csrf_exempt
 def register_new_user(request):
@@ -94,6 +100,13 @@ def logout(request: WSGIRequest):
     if request.user.is_authenticated:
         auth_logout(request)
     return HttpResponse({'success': True})
+
+@csrf_exempt
+def get_initial_user_info(request):
+  context = {}
+  user = get_user(request)
+  context = get_current_user_data(context, user)
+  return JsonResponse(context)
 
 @csrf_exempt  # Disable CSRF protection for this view
 @require_http_methods(["POST"])  # Only allow POST requests

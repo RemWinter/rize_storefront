@@ -6,10 +6,14 @@ import { IoMenuSharp } from "react-icons/io5";
 import { useAppDispatch, useAppSelector } from '../redux/store'
 import { setDimensions, setNavVisible, setScrollOffsetY } from '../redux/globalSlice'
 import Divider from '@mui/material/Divider';
-import { MdLogin } from "react-icons/md";
+import { MdLogin, MdLogout } from "react-icons/md";
 import { IoShirtOutline, IoPhonePortraitOutline } from "react-icons/io5";
 import { TbMessage2Question } from "react-icons/tb";
+import { TbUser } from "react-icons/tb";
 import UnderlineDivAnimated from '../common/UnderlineDivAnimated/UnderlineDivAnimated';
+import { getInitialUserInfoProcess, logoutProcess } from '../redux/userSlice';
+import { Alert, Avatar, Snackbar } from '@mui/material';
+import { setSnackbarIsOpen, setSnackbarSeverity, setSnackbarText } from '../redux/snackbarSlice';
 
 interface Dimentions {
   x:number;
@@ -22,7 +26,39 @@ interface NavOption {
   link:string;
 }
 
-const Navbar = () => {
+interface NavProps {
+  page?:string;
+}
+
+const navOptions: Record<string, NavOption> = {
+  'login': {
+    text: 'Login',
+    icon: <MdLogin size={19}/>,
+    link: '/login'
+  },
+  'clothing': {
+    text: 'Clothing',
+    icon: <IoShirtOutline size={19}/>,
+    link: '/products'
+  },
+  'accessories': {
+    text: 'Accessories',
+    icon: <IoPhonePortraitOutline size={19}/>,
+    link: '#'
+  },
+  'contact': {
+    text: 'Contact',
+    icon: <TbMessage2Question size={19}/>,
+    link: '#'
+  },
+  'myAccount': {
+    text: 'My Account',
+    icon: <TbUser size={19}/>,
+    link: '#'
+  },
+}
+
+const Navbar:React.FC<NavProps> = (props) => {
   const [prevScrollPos, setPrevScrollPos] = useState<number>(0);
   const [visible, setVisible] = useState<boolean>(true);
   const [atTop, setAtTop] = useState<boolean>(true);
@@ -30,9 +66,11 @@ const Navbar = () => {
   const mobileNavOpenRef = useRef<boolean>(false)
   const [windowDimensions, setWindowDimension] = useState<Dimentions | null>(null)
   const [initialLoad, setInitialLoad] = useState<boolean>(true)
+  const [activeNavOptions, setActiveNavOptions] = useState<NavOption[]>([])
+
   const nav = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch()
-  const {email, firstName, lastName, isStaff} = useAppSelector(state => state.userSlice)
+  const {email, firstName, lastName, isStaff, userLoggedIn} = useAppSelector(state => state.userSlice)
 
   const handleScroll = () => {
     const currentScrollPos = window.scrollY;
@@ -43,30 +81,14 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    // console.log(email)
-    // setNavOptions([
-    //   {
-    //     text: 'Logout',
-    //     icon: <MdLogin size={19}/>,
-    //     link: '/login'
-    //   },
-    //   {
-    //     text: 'Clothing',
-    //     icon: <IoShirtOutline size={19}/>,
-    //     link: '/products'
-    //   },
-    //   {
-    //     text: 'Accessories',
-    //     icon: <IoPhonePortraitOutline size={19}/>,
-    //     link: '#'
-    //   },
-    //   {
-    //     text: 'Contact',
-    //     icon: <TbMessage2Question size={19}/>,
-    //     link: '#'
-    //   },
-    // ])
-  }, [email])
+    setActiveNavOptions(() => {
+      const arr: NavOption[] = []
+      userLoggedIn ? arr.push(navOptions.myAccount) : arr.push(navOptions.login)
+      props.page !== 'products' && arr.push(navOptions.clothing)
+      arr.push(navOptions.accessories, navOptions.contact)
+      return arr
+    })
+  }, [userLoggedIn, props.page])
 
   useEffect(() => {
     dispatch(setNavVisible(atTop))
@@ -91,7 +113,10 @@ const Navbar = () => {
     const observer = new MutationObserver((mutations) => {
       mutations.forEach(mutation => {
         if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-          mutation.target.style.top === '0px' ? dispatch(setNavVisible(true)) : dispatch(setNavVisible(false))
+          if (mutation.target instanceof HTMLElement) {
+            const targetElement = mutation.target as HTMLElement;
+            targetElement.style.top === '0px' ? dispatch(setNavVisible(true)) : dispatch(setNavVisible(false));
+          }
         }
       });
     });
@@ -99,6 +124,11 @@ const Navbar = () => {
     if (nav.current) {
       observer.observe(nav.current, { attributes: true });
     }
+
+    dispatch(getInitialUserInfoProcess()).unwrap()
+    .then(res => {
+
+    })
 
     return () => {
       window.removeEventListener('resize', handleResize);
@@ -119,37 +149,16 @@ const Navbar = () => {
     mobileNavOpenRef.current = mobileNavOpen
   }, [mobileNavOpen])
 
-  const [navOptions, setNavOptions] = useState<NavOption[]>([
-    {
-      text: 'Login',
-      icon: <MdLogin size={19}/>,
-      link: '/login'
-    },
-    {
-      text: 'Clothing',
-      icon: <IoShirtOutline size={19}/>,
-      link: '/products'
-    },
-    {
-      text: 'Accessories',
-      icon: <IoPhonePortraitOutline size={19}/>,
-      link: '#'
-    },
-    {
-      text: 'Contact',
-      icon: <TbMessage2Question size={19}/>,
-      link: '#'
-    },
-  ])
   return (
     <nav 
       ref={nav}
       className={styles.navbarContainer} 
       style={{ 
         top: visible ? '0' : '-200px', 
-        backgroundColor: atTop ? 'rgba(0,0,0,0)' : 'rgba(80, 100, 115, 0.9)',
+        // backgroundColor: atTop ? 'rgba(0,0,0,0)' : 'rgba(80, 100, 115, 0.5)',
+        backgroundColor: atTop ? 'rgba(0,0,0,0)' : 'rgb(86 98 109)',
         padding: atTop ? '20px 0' : '8px 0',
-        height: atTop ? '104px' : '80px',
+        height: atTop ? '104px' : '70px',
         backdropFilter: atTop ? 'blur(0px)' : 'blur(5px)'
       }}>
         <div 
@@ -169,13 +178,15 @@ const Navbar = () => {
               // height={60}
             />
         </div>
-        {windowDimensions && windowDimensions.x >= 960 ? 
-          <NavItems navOptions={navOptions} initialLoad={initialLoad} setInitialLoad={setInitialLoad}/> :
+        {windowDimensions && props.page !== 'products' && windowDimensions.x >= 960  ? 
+          <NavItems navOptions={activeNavOptions} initialLoad={initialLoad} setInitialLoad={setInitialLoad}/> :
           <MobileNav open={mobileNavOpen} 
             toggleOpen={toggleMobileNav} 
-            navOptions={navOptions} 
+            navOptions={activeNavOptions} 
             windowDimensions={windowDimensions}
             atTop={atTop}
+            loggedIn={userLoggedIn}
+            firstName={firstName}
           />
         }
     </nav>
@@ -223,16 +234,44 @@ interface MobileNavProps {
   navOptions: Record<string, any>[];
   windowDimensions: Dimentions | null;
   atTop: boolean;
+  loggedIn: boolean;
+  firstName: string
 }
 
-const MobileNav: React.FC<MobileNavProps> = ({open, toggleOpen, navOptions, windowDimensions, atTop}) => {
+const MobileNav: React.FC<MobileNavProps> = ({open, toggleOpen, navOptions, windowDimensions, atTop, loggedIn, firstName}) => {
+  const [alert, setAlert] = useState<'error' | 'success' | null>(null)
   const hamBurgermenu = useRef<HTMLDivElement>(null)
+  const menuRef = useRef<HTMLDivElement>(null)
+  const dispatch = useAppDispatch()
+
+  const handleLogout = () => {
+    dispatch(logoutProcess())
+      .unwrap()
+      .then(() => {
+        toggleOpen()
+        dispatch(setSnackbarText('Successfully logged out'))
+        dispatch(setSnackbarSeverity('success'))
+        dispatch(setSnackbarIsOpen(true))
+      })
+  }
 
   useEffect(() => {
     if (hamBurgermenu.current) {
       hamBurgermenu.current.style.opacity = '1'
     }
-  }, [])
+    const handleClickOutside = (e:any) => {
+      // If the menu is open and the click is outside the menu, close the menu
+      if (menuRef.current && !menuRef.current.contains(e.target) && !hamBurgermenu.current?.contains(e.target)) {
+        toggleOpen()
+      }
+    }
+    if (open) {
+        document.addEventListener('mousedown', handleClickOutside);
+      }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [open])
 
   return (
     <>
@@ -245,12 +284,13 @@ const MobileNav: React.FC<MobileNavProps> = ({open, toggleOpen, navOptions, wind
       </div>
       {windowDimensions &&
         <div 
+          ref={menuRef}
           style={{
             right: open ? '0' : windowDimensions.x < 960 ? '-100%' : '-50%', 
             backgroundColor: open ? 'var(--color-retro-blue)' : 'rgba(0,0,0,0)', maxWidth: '300px'}}
           className={styles.mobileNavContainer}
         >
-          <div style={{width:'100%', height: atTop ? '104px' : '80px', transition: 'all 0.5s'}}/>
+          <div style={{width:'100%', height: atTop ? '104px' : '70px', transition: 'all 0.5s'}}/>
           <Divider/>
           <div className={styles.menuItemsContainer}>
             {navOptions.map((item, index) => (
@@ -263,6 +303,17 @@ const MobileNav: React.FC<MobileNavProps> = ({open, toggleOpen, navOptions, wind
               </div>
             ))}
           </div>
+          {loggedIn &&
+          <>
+            <Divider/>
+            <div className={styles.menuItemsContainer}>
+              <div className={styles.mobileNavLink} onClick={handleLogout}>
+                <MdLogout size={19}/>
+                <span className={styles.mobileNavLinkText} id={styles.logoutNavText}>Logout</span>
+              </div>
+            </div>
+          </>
+          }
         </div>
       }
       
