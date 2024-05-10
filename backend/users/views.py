@@ -108,25 +108,6 @@ def get_initial_user_info(request):
   context = get_current_user_data(context, user)
   return JsonResponse(context)
 
-@csrf_exempt  # Disable CSRF protection for this view
-@require_http_methods(["POST"])  # Only allow POST requests
-def kommo_webhook(request):
-    try:
-        print(request)
-        print(request.POST)
-        for key, value in request.POST.items():
-            print(f'{key}: {value}')
-        # Load JSON data from the request body
-        webhook_data = json.loads(request.body.decode('utf-8'))
-        print("Received webhook data:", webhook_data)  # Log the webhook data
-
-        # Here you can add your logic based on the webhook data
-        # For example, processing messages, updating CRM records, etc.
-
-        return JsonResponse({"status": "success", "message": "Webhook received"}, status=200)
-    except json.JSONDecodeError:
-        return JsonResponse({"status": "error", "message": "Invalid JSON"}, status=400)
-
 class EventHandler(AssistantEventHandler):
     def __init__(self):
         super().__init__()  # Initialize the base class
@@ -160,17 +141,142 @@ class EventHandler(AssistantEventHandler):
         # Join all parts of the response stored in the buffer and return them
         return ''.join(self.response_buffer)
 
+@csrf_exempt  # Disable CSRF protection for this view
+@require_http_methods(["POST"])  # Only allow POST requests
+def kommo_webhook(request):
+    # try:
+      # print("POST Data:", request.POST)
+      # print(request)
+      # print(request.POST)
+      # for key, value in request.POST.items():
+      #     print(f'{key}: {value}')
+      
+      message_type = request.POST.getlist('message[add][0][type]')[0]
+      if message_type != 'incoming':
+         return JsonResponse({"status": "success", "message": "Webhook received"}, status=200)
+      
+      user_msg = request.POST.getlist('message[add][0][text]')[0]
+      author_name = request.POST.getlist('message[add][0][author][name]')[0]
+      author_id = request.POST.getlist('message[add][0][author][id]')[0]
+      message_id = request.POST.getlist('message[add][0][id]')[0]
+      message_chat_id = request.POST.getlist('message[add][0][chat_id]')[0]
+      message_talk_id = request.POST.getlist('message[add][0][talk_id]')[0]
+      message_contact_id = request.POST.getlist('message[add][0][contact_id]')[0]
+      message_entity_id = request.POST.getlist('message[add][0][entity_id]')[0]
+      
+      thread_id = request.POST.get('threadId')
+      # Path to your credentials file
+      CREDENTIALS_FILE = 'fitwith-407023-e0210ba1ed62.json'
+
+      # If modifying these SCOPES, delete the file token.pickle.
+      # SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+      SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+      creds = None
+      token_pickle_path = 'token.pickle'
+      
+      if os.path.exists(token_pickle_path):
+        with open(token_pickle_path, 'rb') as token:
+          creds = pickle.load(token)
+
+      if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+          creds.refresh(Request())
+        else:
+          creds = service_account.Credentials.from_service_account_file(CREDENTIALS_FILE, scopes=SCOPES)
+
+        # Save the credentials for the next run
+        with open(token_pickle_path, 'wb') as token:
+          pickle.dump(creds, token)
+
+      service = build('sheets', 'v4', credentials=creds)  # Ensure this is correct
+      sheet_id = '199D94TLl11sWb4VaElquX2Hj7UzpA3dtcLPrm_PrkaA'
+      range_name = 'Sheet1!A1:B2'
+      sheet = service.spreadsheets().values().get(spreadsheetId=sheet_id, range=range_name).execute()
+      values = sheet.get('values', [])
+      system_prompt = None
+      if not values:
+        pass
+      else:
+        for i, row in enumerate(values):
+          if i == 1:
+            system_prompt = row[0]
+        client = OpenAI()
+
+        if thread_id:
+          thread_message = client.beta.threads.messages.create(
+            thread_id=thread_id,
+            role="user",
+            content=user_msg,
+          )
+        else:
+          if system_prompt:
+            thread = client.beta.threads.create(
+              messages=[
+                {"role": "assistant", "content": system_prompt},
+                {"role": "user", "content": user_msg}
+              ],
+            )
+          else:
+            thread = client.beta.threads.create(
+              messages=[
+                {"role": "user", "content": user_msg}
+              ],
+            )
+          thread_id = thread.id
+
+        event_handler = EventHandler()
+
+        with client.beta.threads.runs.stream(
+          thread_id=thread_id,
+          assistant_id='asst_WQ4gZTCItqyuYUeS1ccpOJFt',
+          event_handler=event_handler,
+        ) as stream:
+          stream.until_done()
+        
+        reply = event_handler.get_full_response()
+      
+      service = build('sheets', 'v4', credentials=creds)
+      sheet_id = '199D94TLl11sWb4VaElquX2Hj7UzpA3dtcLPrm_PrkaA'
+      range_name = 'Sheet3!A1'  # Starting range
+
+      # Data to append
+      new_row_data = [
+          [author_name, user_msg, author_id, message_id, message_chat_id, message_talk_id, message_contact_id, message_entity_id, reply]
+      ]
+
+      # Prepare the request body
+      body = {
+          'values': new_row_data
+      }
+
+      # Append the data
+      result = service.spreadsheets().values().append(
+          spreadsheetId=sheet_id, range=range_name,
+          valueInputOption='RAW', insertDataOption='INSERT_ROWS', body=body).execute()
+
+
+      return JsonResponse({"status": "success", "message": "Webhook received"}, status=200)
+    # except json.JSONDecodeError:
+    #     return JsonResponse({"status": "error", "message": "Invalid JSON"}, status=400)
 
 @csrf_exempt
 def process_message_with_AI(request: WSGIRequest):
   context = {}
-  user_msg = request.POST.get('userMsg')
+  user_msg = request.POST['message']['add'][0]['text']
+  author_name = request.POST['message']['add'][0]['author']['name']
+  author_id = request.POST['message']['add'][0]['author']['id']
+  message_id = request.POST['message']['add'][0]['id']
+  message_chat_id = request.POST['message']['add'][0]['chat_id']
+  message_talk_id = request.POST['message']['add'][0]['talk_id']
+  message_contact_id = request.POST['message']['add'][0]['contact_id']
+  message_entity_id = request.POST['message']['add'][0]['entity_id']
   thread_id = request.POST.get('threadId')
    # Path to your credentials file
   CREDENTIALS_FILE = 'fitwith-407023-e0210ba1ed62.json'
 
   # If modifying these SCOPES, delete the file token.pickle.
-  SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+  # SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+  SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
   creds = None
   token_pickle_path = 'token.pickle'
   
@@ -234,6 +340,25 @@ def process_message_with_AI(request: WSGIRequest):
       stream.until_done()
     
     reply = event_handler.get_full_response()
+  
+  service = build('sheets', 'v4', credentials=creds)
+  sheet_id = '199D94TLl11sWb4VaElquX2Hj7UzpA3dtcLPrm_PrkaA'
+  range_name = 'Sheet3!A1'  # Starting range
+
+  # Data to append
+  new_row_data = [
+      [author_name, user_msg, author_id, message_id, message_chat_id, message_talk_id, message_contact_id, message_entity_id, reply]
+  ]
+
+  # Prepare the request body
+  body = {
+      'values': new_row_data
+  }
+
+  # Append the data
+  result = service.spreadsheets().values().append(
+      spreadsheetId=sheet_id, range=range_name,
+      valueInputOption='RAW', insertDataOption='INSERT_ROWS', body=body).execute()
 
   context['reply'] = reply
   context['threadId'] = thread_id
