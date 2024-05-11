@@ -6,7 +6,10 @@ export const register = async (data:Record<string, any>) => {
     const res = await axios.post(
       URLs.user.register,
       data,
-      {headers: {"Content-Type": "multipart/form-data"}},
+      {
+        headers: {"Content-Type": "multipart/form-data"},
+        withCredentials: true
+      }
     )
     if (res.data.error) {
       throw new Error(res.data.error)
