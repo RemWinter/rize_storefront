@@ -50,7 +50,6 @@ const Register = () => {
     let formIsValid = true
     Object.entries(allValues).forEach(([key, value]) => {
       const inputIsValid = handleInputValidation(value, key)
-      console.log(`${key} is valid: ${inputIsValid}`)
       if (!inputIsValid) formIsValid = false
     })
     if (formIsValid) {
@@ -293,7 +292,7 @@ const checkName = (name:string) => {
               </div>
             }
             <div className={styles.btnContainer}>
-              <button onClick={() => console.log(allValues)} className={styles.btn} type="submit">Create Account</button>
+              <button className={styles.btn} type="submit">Create Account</button>
             </div>
               {resError && <p style={{textAlign: 'center'}} className={styles.errorText}>{resError}</p>}
           </form>
