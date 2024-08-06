@@ -14,44 +14,35 @@ interface IFormInput {
   passwordConfirm: string;
   firstName: string;
   lastName: string;
-}
-
-// Validation schema
-const schema = Yup.object().shape({
-  email: Yup.string().email('Must be a valid email').required('Email is required'),
-  password: Yup.string().required('Password is required'),
-  passwordConfirm: Yup.string().required('Password is required'),
-  firstName: Yup.string().required('First Name is required'),
-  lastName: Yup.string().required('Last Name is required'),
-});
-
-interface inputSuccessState {
-  firstName: boolean | null;
-  lastName: boolean | null;
-  email: boolean | null;
-  password: boolean | null;
-  passwordConfirm: boolean | null;
+  staffRegister: boolean; 
+  passwordStaff: string;
 }
 
 const Register = () => {
   const dispatch = useAppDispatch()
   const [showPassword, setShowPassword] = useState<boolean>(false)
-  const [inputSuccess, setInputSuccess] = useState<inputSuccessState>({
-    firstName: null,
-    lastName: null,
-    email: null,
-    password: null,
-    passwordConfirm: null
-  })
+  const [showPasswordStaff, setShowPasswordStaff] = useState<boolean>(false)
   const [firstNameHasBlurred, setFirstNameHasBlurred] = useState<boolean | null>(null)
   const [lastNameHasBlurred, setLastNameHasBlurred] = useState<boolean | null>(null)
   const [emailHasBlurred, setEmailHasBlurred] = useState<boolean | null>(null)
   const [passwordHasBlurred, setPasswordHasBlurred] = useState<boolean | null>(null)
   const [passwordConfirmHasBlurred, setPasswordConfirmHasBlurred] = useState<boolean | null>(null)
+  const [passwordStaffHasBlurred, setPasswordStaffHasBlurred] = useState<boolean | null>(null)
   const [resError, setResError] = useState<string>('')
   const [existingEmails, setExistingEmails] = useState<string[]>([])
   const [loading, setLoading]= useState<boolean>(false)
-  const { register, handleSubmit, watch, setError, clearErrors, formState: { errors } } = useForm<IFormInput>({
+  const [isStaff, setIsStaff] = useState<boolean>(false)
+  const schema = Yup.object().shape({
+    email: Yup.string().email('Must be a valid email').required('Email is required'),
+    password: Yup.string().required('Password is required'),
+    passwordConfirm: Yup.string().required('Password is required'),
+    firstName: Yup.string().required('First Name is required'),
+    lastName: Yup.string().required('Last Name is required'),
+    staffRegister: Yup.boolean().required(),
+    passwordStaff: Yup.string().required('Staff password is required')
+  });
+
+  const { register, handleSubmit, watch, setValue, setError, clearErrors, formState: { errors } } = useForm<IFormInput>({
     resolver: yupResolver(schema)
   });
   const allValues = watch();
@@ -59,6 +50,7 @@ const Register = () => {
     let formIsValid = true
     Object.entries(allValues).forEach(([key, value]) => {
       const inputIsValid = handleInputValidation(value, key)
+      console.log(`${key} is valid: ${inputIsValid}`)
       if (!inputIsValid) formIsValid = false
     })
     if (formIsValid) {
@@ -82,13 +74,22 @@ const Register = () => {
     } 
   }
   
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword)
+  const toggleShowPassword = (staff:boolean) => {
+    !staff? setShowPassword(!showPassword) : setShowPasswordStaff(!showPasswordStaff)
   }
 
   useEffect(() => {
-    console.log(inputSuccess)
-  }, [inputSuccess])
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('staff') === 'true') {
+      setIsStaff(true) 
+      setValue('staffRegister', true)
+    }
+    else {
+      setIsStaff(false)
+      setValue('staffRegister', false)
+      setValue('passwordStaff','N/A')
+    }
+  }, [])
 
 const checkEmail = (email:string) => {
   const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -182,6 +183,9 @@ const checkName = (name:string) => {
         return true
       }
     }
+    else if (inputName === 'passwordStaff' || inputName === 'staffRegister') {
+      return true
+    }
     return false
   }
 
@@ -239,7 +243,7 @@ const checkName = (name:string) => {
                   onBlur={(e) => handleInputValidation(e.target.value, 'password')}
                   // onChange={(e) => setPassword(e.target.value.value)}
                 />
-                <div className={styles.endIconContainer} onClick={toggleShowPassword}>
+                <div className={styles.endIconContainer} onClick={() => toggleShowPassword(false)}>
                     {!showPassword ? <FaRegEyeSlash className={styles.endIcon} size={20}/> : <FaRegEye className={styles.endIcon} size={20}/>}
                 </div>
                 {errors.password && <p className={styles.errorText}>{errors.password.message}</p>}
@@ -256,14 +260,33 @@ const checkName = (name:string) => {
                   onBlur={(e) => handleInputValidation(e.target.value, 'passwordConfirm')}
                   // onChange={(e) => setPasswordConfirm(e.target.value.value)}
                   />
-                <div className={styles.endIconContainer} onClick={toggleShowPassword}>
+                <div className={styles.endIconContainer} onClick={() => toggleShowPassword(false)}>
                     {!showPassword ? <FaRegEyeSlash className={styles.endIcon} size={20}/> : <FaRegEye className={styles.endIcon} size={20}/>}
                 </div>
                 {errors.passwordConfirm && <p className={styles.errorText}>{errors.passwordConfirm.message}</p>}
               </div>
             </div>
+            {isStaff && 
+              <div className={styles.passwordContainer}>
+                <label className={styles.label}>Staff Password:</label>
+                <div style={{position: 'relative', width: '100%'}}>
+                  <input 
+                    className={`${styles.input} ${!!errors.passwordStaff ? styles.inputError : passwordStaffHasBlurred !== null && styles.inputSuccess}`}
+                    type={!showPasswordStaff ? "password" : "text"}
+                    {...register('passwordStaff')}
+                    placeholder='Enter the Staff Password'
+                    onBlur={(e) => handleInputValidation(e.target.value, 'passwordStaff')}
+                    // onChange={(e) => setpasswordStaff(e.target.value.value)}
+                    />
+                  <div className={styles.endIconContainer} onClick={() => toggleShowPassword(true)}>
+                      {!showPasswordStaff ? <FaRegEyeSlash className={styles.endIcon} size={20}/> : <FaRegEye className={styles.endIcon} size={20}/>}
+                  </div>
+                  {errors.passwordStaff && <p className={styles.errorText}>{errors.passwordStaff.message}</p>}
+                </div>
+              </div>
+            }
             <div className={styles.btnContainer}>
-              <button className={styles.btn} type="submit">Create Account</button>
+              <button onClick={() => console.log(allValues)} className={styles.btn} type="submit">Create Account</button>
             </div>
               {resError && <p style={{textAlign: 'center'}} className={styles.errorText}>{resError}</p>}
           </form>
