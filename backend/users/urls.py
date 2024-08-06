@@ -10,4 +10,5 @@ urlpatterns = [
   path('webhook/kommo/', views.kommo_webhook, name='kommo-webhook'),
   path('api/process_message_with_ai/', views.process_message_with_AI),
   path('api/updateAssistantSettings/', views.updateAssistantSettings),
+  path('api/calc_net_sal', views.calculate_net_pay),
 ]

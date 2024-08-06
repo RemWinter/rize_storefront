@@ -40,6 +40,10 @@ def register_new_user(request):
   first_name = request.POST.get('firstName').lower()
   last_name = request.POST.get('lastName').lower()
   password = request.POST.get('password')
+  staff_register_str = request.POST.get('staffRegister')
+  staff_register = staff_register_str.lower() == 'true'
+  password_staff = request.POST.get('passwordStaff')
+  RIZE_STAFF_PASS = os.environ.get('RIZE_STAFF_PASS')
 
   if RizeUser.objects.filter(email=email).exists():
     context['error'] = 'email already exists'
@@ -56,6 +60,9 @@ def register_new_user(request):
   elif not password:
     context['error'] = 'password is required'
     return JsonResponse(context)
+  elif staff_register and password_staff != RIZE_STAFF_PASS:
+     context['error'] = 'incorrect staff password'
+     return JsonResponse(context)
   # stripe.api_key = settings.STRIPE_SECRET_KEY
   # create a stripe customer for each user
   # stripe_customer = stripe.Customer.create(
@@ -68,6 +75,7 @@ def register_new_user(request):
     password=make_password(password),
     first_name=first_name,
     last_name=last_name,
+    is_staff=staff_register
     # stripe_customer_id=user_stripe.id,
   )
   user_data.save()
@@ -254,4 +262,32 @@ def updateAssistantSettings(request: WSGIRequest):
       temperature=temperature
     )
   context['success'] = True
+  return JsonResponse(context)
+
+@csrf_exempt
+def calculate_net_pay(request):
+  context = {}
+
+  gross_salary = int(request.POST.get('userMsg'))
+  personal_allowance = 12570 
+  basic_threshold = 50270
+  higher_threshold = 125140
+  additional_rate_threshold = 125141
+
+  # Calculate taxable income
+  if gross_salary <= personal_allowance:
+    context['net_salary'] = gross_salary
+    return JsonResponse(context)  # No tax if income is below personal allowance
+
+  # Calculate basic rate tax
+  if  gross_salary <= basic_threshold:
+    tax = (gross_salary - personal_allowance) * 0.20
+  elif gross_salary <= higher_threshold:
+    tax = (basic_threshold - personal_allowance) * 0.20 + (gross_salary - basic_threshold) * 0.40
+  else:
+    tax = (basic_threshold - personal_allowance) * 0.20 + (higher_threshold - basic_threshold) * 0.40 + (gross_salary - higher_threshold) * 0.45
+
+  net_salary = gross_salary - tax
+  context['net_salary'] = round(net_salary,2)
+
   return JsonResponse(context)

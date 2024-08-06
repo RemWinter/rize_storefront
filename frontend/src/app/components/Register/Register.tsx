@@ -70,6 +70,12 @@ const Register = () => {
             setExistingEmails([...existingEmails, email])
           }
         }
+        else if (err.message === 'incorrect staff password') {
+          setError('passwordStaff', {
+            type: 'manual',
+            message: 'Incorrect staff password'
+          })
+        }
       }).finally(() => setLoading(false))
     } 
   }
@@ -184,6 +190,7 @@ const checkName = (name:string) => {
       }
     }
     else if (inputName === 'passwordStaff' || inputName === 'staffRegister') {
+      setPasswordStaffHasBlurred(true)
       return true
     }
     return false
