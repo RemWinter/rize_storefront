@@ -156,7 +156,7 @@ const Navbar:React.FC<NavProps> = (props) => {
       style={{ 
         top: visible ? '0' : '-200px', 
         // backgroundColor: atTop ? 'rgba(0,0,0,0)' : 'rgba(80, 100, 115, 0.5)',
-        backgroundColor: atTop ? 'rgba(0,0,0,0)' : 'rgb(86 98 109)',
+        backgroundColor: atTop ? 'rgba(0,0,0,0)' : 'rgb(67 67 67)',
         padding: atTop ? '20px 0' : '8px 0',
         height: atTop ? '104px' : '70px',
         backdropFilter: atTop ? 'blur(0px)' : 'blur(5px)'
