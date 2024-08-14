@@ -3,82 +3,9 @@ import React from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import styles from './ProductsInner.module.css'
 import Image from 'next/image'
+import { data } from '@/app/api/dummyData'
 
 const ProudctsInner = () => {
-  const data = [
-    {
-      tagline: '',
-      title: 'Nike Sportswear Club Fleece',
-      description: "Men's Full-Zip Hoodie",
-      colors: 4,
-      price: 69.99,
-      discountPrice: null,
-      thumbnail: '/nike1.jpeg'
-    },
-    {
-      tagline: 'BestSeller',
-      title: 'Nike Sportswear Club Fleece',
-      description: 'Pullover Hoodie',
-      colors: 1,
-      price: 59.99,
-      discountPrice: null,
-      thumbnail: '/nike2.png'
-    },
-    {
-      tagline: 'BestSeller',
-      title: 'Nike Sportswear Tech Fleece Windrunner',
-      description: "Men's Full-Zip Hoodie",
-      colors: 3,
-      price: 109.99,
-      discountPrice: 76.99,
-      thumbnail: '/nike3.jpeg'
-    },
-    {
-      tagline: 'BestSeller',
-      title: 'Nike Sportswear Tech Fleece Windrunner',
-      description: "Men's Full-Zip Hoodie",
-      colors: 5,
-      price: 109.99,
-      discountPrice: 54.99,
-      thumbnail: '/nike4.png'
-    },
-    {
-      tagline: 'BestSeller',
-      title: 'Nike Sportswear Tech Fleece Windrunner',
-      description: "Men's Full-Zip Hoodie",
-      colors: 3,
-      price: 109.99,
-      discountPrice: 76.99,
-      thumbnail: '/nike3.jpeg'
-    },
-    {
-      tagline: 'BestSeller',
-      title: 'Nike Sportswear Tech Fleece Windrunner',
-      description: "Men's Full-Zip Hoodie",
-      colors: 5,
-      price: 109.99,
-      discountPrice: 54.99,
-      thumbnail: '/nike4.png'
-    },
-    {
-      tagline: 'BestSeller',
-      title: 'Nike Sportswear Tech Fleece Windrunner',
-      description: "Men's Full-Zip Hoodie",
-      colors: 3,
-      price: 109.99,
-      discountPrice: 76.99,
-      thumbnail: '/nike3.jpeg'
-    },
-    {
-      tagline: 'BestSeller',
-      title: 'Nike Sportswear Tech Fleece Windrunner',
-      description: "Men's Full-Zip Hoodie",
-      colors: 5,
-      price: 109.99,
-      discountPrice: 54.99,
-      thumbnail: '/nike4.png'
-    },
-  ]
   return (
     <div className={styles.container}>
       {/* <InfiniteScroll

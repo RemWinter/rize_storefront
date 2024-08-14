@@ -71,6 +71,7 @@ const Navbar:React.FC<NavProps> = (props) => {
   const nav = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch()
   const {email, firstName, lastName, isStaff, userLoggedIn} = useAppSelector(state => state.userSlice)
+  const {dimensions} = useAppSelector(state => state.globalSlice)
 
   const handleScroll = () => {
     const currentScrollPos = window.scrollY;
@@ -96,8 +97,8 @@ const Navbar:React.FC<NavProps> = (props) => {
   
   const handleResize = () => {
     const dimension = {x: window.innerWidth, y: window.innerHeight}
-    setWindowDimension(dimension)
-    dispatch(setDimensions(dimension))
+    // setWindowDimension(dimension)
+    // dispatch(setDimensions(dimension))
   };
 
   const toggleMobileNav = () => {
@@ -106,8 +107,8 @@ const Navbar:React.FC<NavProps> = (props) => {
 
   useEffect(() => {
     const dimensions = {x:window.innerWidth, y:window.innerHeight}
-    dispatch(setDimensions(dimensions))
-    setWindowDimension(dimensions)
+    // dispatch(setDimensions(dimensions))
+    // setWindowDimension(dimensions)
     window.addEventListener('resize', handleResize)
 
     const observer = new MutationObserver((mutations) => {
@@ -178,12 +179,12 @@ const Navbar:React.FC<NavProps> = (props) => {
               // height={60}
             />
         </div>
-        {windowDimensions && props.page !== 'products' && windowDimensions.x >= 960  ? 
+        {dimensions && props.page !== 'products' && dimensions.x >= 960  ? 
           <NavItems navOptions={activeNavOptions} initialLoad={initialLoad} setInitialLoad={setInitialLoad}/> :
           <MobileNav open={mobileNavOpen} 
             toggleOpen={toggleMobileNav} 
             navOptions={activeNavOptions} 
-            windowDimensions={windowDimensions}
+            windowDimensions={dimensions}
             atTop={atTop}
             loggedIn={userLoggedIn}
             firstName={firstName}

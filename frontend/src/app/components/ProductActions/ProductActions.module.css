@@ -1,0 +1,93 @@
+.productSizesContainer {
+  padding: 20px 24px 0;
+  color: var(--text-primary);
+}
+
+.container h2 {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.container h2.error {
+  color: var(--color-error);
+}
+
+.sizesBtnContainer {
+  display: grid;
+  margin: 10px 0;
+  grid-template-columns: repeat(5, minmax(0px, 1fr));
+  gap: 7px;
+  max-width: 100%;
+  padding: 0px;
+  border-radius: 4px;
+}
+
+.sizesBtnContainer.error {
+  border: solid 1px var(--color-error);
+}
+
+.sizeBtn {
+  border: 1px solid var(--text-tertiary);
+  border-radius: 4px;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  color: var(--text-primary);
+  font-weight: 500;
+  transition: all 0.5s;
+}
+
+.sizeBtnActive, .sizeBtnActive h1 {
+  border-color: var(--text-primary);
+  font-size: 18px;
+}
+
+.containerCTA {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: 0.5s all;
+  /* padding: 0 24px; */
+}
+
+.btnCTA {
+  width: 100%;
+  border-radius: 30px;
+  height: 60px;
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+.bagBtn {
+  background-color: var(--color-primary);
+  position: relative;
+  transition: all 0.5s;
+  border-radius: 0px;
+  /* width: 50%; */
+  margin: auto;
+}
+
+.bagBtnFixed {
+  background-color: var(--color-primary);
+  position: fixed;
+  bottom: 0;
+  z-index: 1;
+  left: 0;
+  border-radius: 0px;
+  transition: all 0.5s;
+}
+
+.bagBtnInView {
+  border-radius: 30px;
+  width: calc(100% - 48px);
+}
+
+.favBtn {
+  background-color: transparent;
+  border: 1px solid var(--text-primary);
+  max-width: calc(100% - 48px);
+  margin: auto;
+}

@@ -8,6 +8,7 @@ import ProductsOuter from "../components/ProductsOuter/ProductsOuter";
 import { useEffect } from "react";
 import { setDimensions } from "../components/redux/globalSlice";
 import dynamic from "next/dynamic";
+import { useWindowDimensions } from "../utils/helperFns";
 
 const ProductsOuterDynamic = dynamic(() => import('../components/ProductsOuter/ProductsOuter'), { ssr: false });
 
@@ -21,11 +22,20 @@ export default function Home() {
         <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet"/>
       </Head>
       <Provider store={store}>
+        <PageContent/>
+      </Provider>
+    </main>
+  );
+}
+
+const PageContent = () => {
+  useWindowDimensions()
+  return (
+    <>
       <Navbar page={'products'}/>
       <div className={styles.pageBody}>
         <ProductsOuterDynamic/>
       </div>
-      </Provider>
-    </main>
-  );
+    </>
+  )
 }

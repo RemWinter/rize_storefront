@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar/Navbar";
 import { store } from "../components/redux/store";
 import Head from 'next/head'
 import Login from "../components/Login/Login";
+import { useWindowDimensions } from "../utils/helperFns";
 
 export default function Home() {
 
@@ -16,9 +17,18 @@ export default function Home() {
         <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet"/>
       </Head>
       <Provider store={store}>
-        <Navbar/>
-        <Login/>
+        <PageContent/>
       </Provider>
     </main>
   );
+}
+
+const PageContent = () => {
+  useWindowDimensions()
+  return (
+    <>
+      <Navbar/>
+      <Login/>
+    </>
+  )
 }

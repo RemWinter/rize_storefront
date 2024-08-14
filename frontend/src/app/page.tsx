@@ -1,10 +1,11 @@
 'use client'
 import { Provider } from "react-redux";
 import styles from "./page.module.css";
-import Navbar from "./components/Navbar/Navbar";
 import { store } from "./components/redux/store";
-import HeroSection from "./components/HeroSection/HeroSection";
 import Head from 'next/head'
+import { useWindowDimensions } from "./utils/helperFns";
+import Navbar from "./components/Navbar/Navbar";
+import HeroSection from "./components/HeroSection/HeroSection";
 
 export default function Home() {
   return (
@@ -15,9 +16,18 @@ export default function Home() {
         <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet"/>
       </Head>
       <Provider store={store}>
-        <Navbar/>
-        <HeroSection/>
+        <Content/>
       </Provider>
     </main>
   );
+}
+
+const Content = () => {
+  useWindowDimensions()
+  return (
+    <>
+      <Navbar/>
+      <HeroSection/>
+    </>
+  )
 }

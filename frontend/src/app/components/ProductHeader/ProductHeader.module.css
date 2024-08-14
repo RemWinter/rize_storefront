@@ -1,0 +1,42 @@
+.container {
+  color: var(--text-primary);
+  padding: 40px 24px 0
+}
+
+.container h2 {
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.titleDiv {
+  display: flex;
+  flex-direction: column;
+}
+
+.pricingDiv {
+  display: flex;
+  margin-top: 20px;
+  gap: 7px;
+}
+
+.title {
+  font-size: 20px;
+}
+
+.description {
+  font-size: 16px;
+}
+
+.price {
+  font-size: 16px;
+}
+
+.discountActive {
+  color: var(--text-tertiary);
+  text-decoration: line-through;
+}
+
+.discountPercentage {
+  color: var(--color-success);
+  font-size: 16px;
+}
