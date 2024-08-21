@@ -12,7 +12,7 @@ import { IoMdHeartEmpty } from "react-icons/io";
 import { setSnackbarIsOpen } from '../redux/snackbarSlice'
 
 
-interface Dimentions {
+interface Dimensions {
   x:number;
   y:number;
 }
@@ -22,7 +22,7 @@ const ProductsOuter = () => {
   const { snackbarIsOpen, snackbarSeverity, snackbarText  } = useAppSelector(state => state.snackbarSlice)
   const {selectedTab} = useAppSelector(state => state.sidebarSlice)
 
-  const [windowDimensions, setWindowDimension] = useState<Dimentions>({x:window.innerWidth, y:window.innerHeight})
+  const [windowDimensions, setWindowDimension] = useState<Dimensions>({x:window.innerWidth, y:window.innerHeight})
   const header = useRef<HTMLDivElement>(null)
   const subHeader = useRef<HTMLDivElement>(null)
   const stickyRef = useRef<HTMLDivElement>(null);

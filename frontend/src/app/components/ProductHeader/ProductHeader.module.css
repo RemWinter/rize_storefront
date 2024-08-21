@@ -40,3 +40,9 @@
   color: var(--color-success);
   font-size: 16px;
 }
+
+@media screen and (min-width: 960px) {
+  .container {
+    padding-top: 0;
+  }
+}

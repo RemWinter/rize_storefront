@@ -1,0 +1,48 @@
+.desktopImagesContainer {
+  display: flex;
+  width: 50%;
+  margin: 0 8px;
+  padding-left: 48px;
+  max-height: 665px;
+  gap: 16px;
+}
+
+.imgStack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+  min-width: 60px;
+}
+
+.imgStackImgDiv {
+  width: 60px;
+}
+
+.imgStackSelected {
+  filter: brightness(0.7);
+}
+
+.selectedImageContainer {
+
+}
+
+.mainImgDiv {
+  position: relative;
+  width: 100%;
+  height: auto;
+  /* max-height: 665px; */
+}
+
+.mainImgDiv img {
+  height: auto !important;
+  width: auto;
+  border-radius: 8px;
+  /* max-height: 665px; */
+}
+
+.img {
+  border-radius: 4px;
+  /* height: auto; */
+}

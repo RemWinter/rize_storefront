@@ -1,5 +1,23 @@
 .main {
-  height: 100%;
+  height: 100vh;
   padding-top: 80px;
   overflow: visible;
+}
+
+.desktopContainer {
+  display: flex;
+  margin-top: 80px;
+  padding: 0 48px 200px;
+}
+
+.containerRight {
+  display: flex;
+  flex-direction: column;
+  /* margin: auto; */
+  justify-content: start;
+  gap: 30px;
+}
+
+.desktopContainer button {
+  cursor: pointer;
 }

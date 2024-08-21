@@ -2,13 +2,13 @@ import { getProjectsAPI, getTabsAPI } from "@/app";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-interface Dimentions {
+interface Dimensions {
   x:number;
   y:number;
 }
 
 type GlobalState = {
-  dimensions: Dimentions | null;
+  dimensions: Dimensions | null;
   scrollOffsetY: number;
   navVisible: boolean
 };
@@ -23,7 +23,7 @@ export const globalSlice = createSlice({
   name: "global",
   initialState,
   reducers: {
-    setDimensions: (state, action: PayloadAction<Dimentions>) => {
+    setDimensions: (state, action: PayloadAction<Dimensions>) => {
       state.dimensions = action.payload;
     },
     setScrollOffsetY: (state, action: PayloadAction<number>) => {

@@ -13,7 +13,7 @@ interface ProjectTab {
   title: string;
 }
 
-interface Dimentions {
+interface Dimensions {
   x:number;
   y:number;
 }
@@ -21,7 +21,7 @@ interface Dimentions {
 type LandingState = {
   projectTabs: ProjectTab[] | null;
   projectData: ProjectCard[] | null;
-  dimensions: Dimentions
+  dimensions: Dimensions
 };
 
 const initialState: LandingState = {
@@ -70,7 +70,7 @@ export const landingSlice = createSlice({
     setProjectData: (state, action: PayloadAction<ProjectCard[] | null>) => {
       state.projectData = action.payload;
     },
-    setDimensions: (state, action: PayloadAction<Dimentions>) => {
+    setDimensions: (state, action: PayloadAction<Dimensions>) => {
       state.dimensions = action.payload;
     },
   },

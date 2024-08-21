@@ -8,6 +8,7 @@ import { store, useAppDispatch, useAppSelector } from '@/app/components/redux/st
 import { useWindowDimensions } from '@/app/utils/helperFns'
 import React, { useEffect } from 'react'
 import { Provider } from 'react-redux'
+import styles from './page.module.css'
 
 const PageClientSide = () => {
 
@@ -26,11 +27,15 @@ const Content = () => {
 
   return (
     <>
-      <Navbar/>
-      {dimensions && dimensions.x >= 960 ? 
-        <Desktop/>
-        :
-        <Mobile/>
+      {dimensions &&
+        <>
+          <Navbar/>
+          {dimensions && dimensions.x >= 960 ? 
+            <Desktop/>
+            :
+            <Mobile/>}
+          
+        </>
       }
     </>
   )
@@ -39,14 +44,18 @@ const Content = () => {
 const Mobile = () => (
   <>
     <ProductHeader/>
-    <ProductImage/>
+    <ProductImage page={'mobile'}/>
     <ProductActions/>
   </>
 )
 const Desktop = () => (
-  <>
-    <h1>Dekstop</h1>
-  </>
+  <div className={styles.desktopContainer}>
+    <ProductImage page={'desktop'}/>
+    <div className={styles.containerRight}>
+      <ProductHeader/>
+      <ProductActions/>
+    </div>
+  </div>
 )
 
 export default PageClientSide

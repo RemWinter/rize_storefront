@@ -15,7 +15,7 @@ import { getInitialUserInfoProcess, logoutProcess } from '../redux/userSlice';
 import { Alert, Avatar, Snackbar } from '@mui/material';
 import { setSnackbarIsOpen, setSnackbarSeverity, setSnackbarText } from '../redux/snackbarSlice';
 
-interface Dimentions {
+interface Dimensions {
   x:number;
   y:number;
 }
@@ -64,7 +64,7 @@ const Navbar:React.FC<NavProps> = (props) => {
   const [atTop, setAtTop] = useState<boolean>(true);
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false)
   const mobileNavOpenRef = useRef<boolean>(false)
-  const [windowDimensions, setWindowDimension] = useState<Dimentions | null>(null)
+  const [windowDimensions, setWindowDimension] = useState<Dimensions | null>(null)
   const [initialLoad, setInitialLoad] = useState<boolean>(true)
   const [activeNavOptions, setActiveNavOptions] = useState<NavOption[]>([])
 
@@ -233,7 +233,7 @@ interface MobileNavProps {
   open: boolean;
   toggleOpen: Function;
   navOptions: Record<string, any>[];
-  windowDimensions: Dimentions | null;
+  windowDimensions: Dimensions | null;
   atTop: boolean;
   loggedIn: boolean;
   firstName: string

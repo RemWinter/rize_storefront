@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styles from './ProductActions.module.css'
 import useInView from '@/app/utils/hooks'
+import { useAppSelector } from '../redux/store'
 
 const ProductActions = () => {
+  const { dimensions } = useAppSelector((state) => state.globalSlice)
   const availableSizes = [
     'xs', 's', 'm', 'l', 'xl', 'xxl'
   ]
@@ -53,6 +55,12 @@ const ProductActions = () => {
               className={`${styles.sizeBtn} ${selectedSize === item && styles.sizeBtnActive}`}
               // style={{borderColor: selectedSize === item ? 'var(--text-primary)' : 'var(--text-tertiary)'}}
               onClick={() => handleSizeSelect(item)}
+              onMouseOver={(e:any) => {
+                e.target?.classList.add(`${styles.sizeBtnHover}`)
+              }}
+              onMouseOut={(e:any) => {
+                e.target?.classList.remove(`${styles.sizeBtnHover}`)
+              }}
             >
               {item.toUpperCase()}
             </button>
@@ -64,7 +72,7 @@ const ProductActions = () => {
       </div>
       {loaded &&
         <div className={styles.containerCTA} ref={divRef}>
-          { !isDivInView &&
+          { !isDivInView && dimensions && dimensions.x < 960  &&
             <button 
               className={`${styles.btnCTA} ${styles.bagBtnFixed}`}
               onClick={handleAddToBag}
